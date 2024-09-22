@@ -2,14 +2,26 @@ import { Button, message } from "antd";
 import { UserOutlined, CrownOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 const Home = () => {
   const navigate = useNavigate();
-
+  const userRole = Cookies.get('userRole')
+  const user = Cookies.get('token')
   const handleRoleSelection = async (selectedRole) => {
     Cookies.set("userRole", selectedRole);
   navigate('/login')
   };
+
+  useEffect(() => {
+    if (userRole && user) {
+      navigate("/dashboard");
+    } else if (!userRole) {
+      navigate("/");
+    }
+   
+    
+  }, []);
 
   return (
     <div className='min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-400 via-pink-500 to-red-500'>

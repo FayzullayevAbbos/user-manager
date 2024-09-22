@@ -12,6 +12,7 @@ import AdminPanel from "./pages/AdminPanel";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import Dashboard from "./components/Dashboard";
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path:'register',
     element:<Register/>
+  },
+  {
+    path:'dashboard',
+    element:<Dashboard/>
   }
 ]);
 function App() {

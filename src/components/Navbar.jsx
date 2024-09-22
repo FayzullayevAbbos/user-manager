@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { json, Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { Layout, Menu, Button } from "antd";
 import {
@@ -13,25 +13,44 @@ import Cookies from "js-cookie";
 const { Header } = Layout;
 
 const Navbar = () => {
+
+
+
+  
   const navigate = useNavigate();
-  const user = auth.currentUser;
 
   const handleLogout = async () => {
-    await auth.signOut();
-    navigate("/"); // Tizimdan chiqqandan keyin asosiy sahifaga yo'naltirish
-  };
-     
-  const handleAuth = (path) => {
-    navigate(path)
-  }
-
-  // Cookie'dan rolni tekshirish
-  useEffect(() => {
-    const userRole = Cookies.get("userRole");
-    if (!userRole) {
-      navigate("/"); // Rol yo'q bo'lsa asosiy sahifaga yo'naltirish
+    try {
+      await signOut(auth); // Tizimdan chiqish
+      navigate('/login'); // Logout bo'lgandan so'ng login sahifasiga yo'naltirish
+    } catch (error) {
+      console.error("Logout error:", error);
     }
-  }, [navigate]);
+  };
+
+
+//   const user = auth.currentUser;f
+
+
+//   const handleLogout = async () => {
+//     await auth.signOut();
+//     navigate("/"); 
+    
+//   };
+     
+//   const handleAuth = (path) => {
+//     navigate(path)
+//   }
+// console.log(user);
+
+//   // Cookie'dan rolni tekshirish
+//   useEffect(() => {
+//     const userRole = Cookies.get("userRole");
+//     if (!userRole) {
+//       navigate("/"); // Rol yo'q bo'lsa asosiy sahifaga yo'naltirish
+//     }
+
+//   }, [navigate]);
 
   return (
     <Header className='bg-white shadow-lg h-auto'>
@@ -45,7 +64,7 @@ const Navbar = () => {
               {Cookies.get("userRole")}
 
               <Button
-                type='link'
+                type=''
                 onClick={handleLogout}
                 icon={<LogoutOutlined />}
                 className='text-black text-[15px] mx-2  hover:text-blue-500'
