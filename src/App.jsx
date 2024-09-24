@@ -1,8 +1,7 @@
 import "./App.css";
 import {
   BrowserRouter as Router,
-  Routes,
-  Route,
+
   Navigate,
   createBrowserRouter,
   RouterProvider,
@@ -13,7 +12,7 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Dashboard from "./components/Dashboard";
 import Teachers from "./pages/Teachers";
-import Users from "./pages/Users";
+
 import Info from "./pages/Info";
 
 function PrivateRoute({ children }) {

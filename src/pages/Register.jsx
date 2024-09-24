@@ -18,7 +18,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      // Foydalanuvchini Firebase Authentication yordamida ro'yxatdan o'tkazish
+    
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -26,22 +26,22 @@ const Register = () => {
       );
       const dbUser = userCredential.user;
 
-      // Foydalanuvchi ma'lumotlarini Firestore ga saqlash
+      
       await setDoc(doc(firestore, "users", dbUser.uid), {
         name: name,
         email: email,
-        role: Cookies.get("userRole"), // Rollar uchun qiymat
-        registrationTime: serverTimestamp(), // Ro'yxatdan o'tgan vaqt
-        lastLoginTime: null, // Foydalanuvchi ilk marta kirgan vaqtda yangilanadi
+        role: Cookies.get("userRole"),
+        registrationTime: serverTimestamp(), 
+        lastLoginTime: null, 
         active: true,
         status: "unblock",
-        uid: dbUser.uid, // Yangi foydalanuvchi holati
+        uid: dbUser.uid, 
         deleted:false,
       });
 
       message.success("Registration successful!");
 
-      // Foydalanuvchini boshqa sahifaga yo'naltirish
+    
       navigate("/dashboard");
     } catch (error) {
       message.error("Registration failed ");
@@ -105,7 +105,7 @@ const Register = () => {
               {
                 min: 6,
                 message: "Password must be at least 6 characters.",
-              }, // Correct password length validation
+              }, 
             ]}
           >
             <Input.Password placeholder='Password' />

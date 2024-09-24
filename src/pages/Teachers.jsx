@@ -25,23 +25,23 @@ const db = getFirestore(app);
 const Teachers = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
-  const [loading ,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const userRole = Cookies.get("userRole");
   const auth = getAuth();
-  const user = auth.currentUser; // Hozirgi foydalanuvchini oling
+  const user = auth.currentUser; 
   const fetchUsers = async () => {
-    setLoading(true)
+    setLoading(true);
     const querySnapshot = await getDocs(
       collection(firestore, "users"),
-    ); // Users firestore collection
+    ); 
     const userList = querySnapshot.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
     }));
     setUsers(userList);
-    setLoading(false)
-    setSelectedUsers([])
+    setLoading(false);
+    setSelectedUsers([]);
   };
   useEffect(() => {
     fetchUsers();
@@ -53,60 +53,43 @@ const Teachers = () => {
     }
   }, []);
 
-  // Userni bloklash, blokdan chiqarish yoki o'chirish funksiyalari
   const handleBlock = async (id) => {
-    setLoading(true)
+    setLoading(true);
     await updateDoc(doc(db, "users", id), { status: "blocked" });
-    // Status yangilanadi
+
     if (user.uid === id) {
-        
       Cookies.remove("userRole");
       Cookies.remove("token");
-     
-      
-      
 
-      // Foydalanuvchini bosh sahifaga yo'naltirish
       navigate("/");
     }
     fetchUsers();
   };
 
   const handleUnblock = async (id) => {
-    setLoading(true)
+    setLoading(true);
     await updateDoc(doc(db, "users", id), { status: "unblock" });
     fetchUsers();
-   
   };
 
   const handleDelete = async (id, authUser) => {
-    setLoading(true)
+    setLoading(true);
     try {
-     
-        await updateDoc(doc(db, "users", id), { deleted: true });
-       
-  
-    
+      await updateDoc(doc(db, "users", id), { deleted: true });
+
       if (user.uid === id) {
-        
         Cookies.remove("userRole");
         Cookies.remove("token");
-       
-        
-        
-  
-        // Foydalanuvchini bosh sahifaga yo'naltirish
         navigate("/");
       }
-  
-      // 4. Foydalanuvchilar ro'yxatini yangilash
+
       fetchUsers();
     } catch (error) {
       console.error("Foydalanuvchini o'chirishda xatolik:", error);
     }
   };
+
   
-  // Table kolonkalari// Table kolonkalari
   const columns = [
     {
       title: (
@@ -202,7 +185,7 @@ const Teachers = () => {
       ),
     },
   ];
-  const filteredUsers = users.filter(user => user.deleted !== true);
+  const filteredUsers = users.filter((user) => user.deleted !== true);
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-2xl font-bold mb-4'> All Users</h1>
@@ -239,7 +222,12 @@ const Teachers = () => {
       </div>
 
       {/* Ant Design Table */}
-      <Table loading={loading} columns={columns} dataSource={filteredUsers} rowKey='id' />
+      <Table
+        loading={loading}
+        columns={columns}
+        dataSource={filteredUsers}
+        rowKey='id'
+      />
     </div>
   );
 };

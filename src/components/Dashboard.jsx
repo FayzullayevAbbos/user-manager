@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Layout, Spin, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { auth, firestore } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 import Sidebar from "./Sidebar";
 import { Header } from "antd/es/layout/layout";
@@ -32,8 +32,9 @@ const Dashboard = ({ children }) => {
   }
  
   
-
-  function logout() {
+  const id = auth.currentUser.uid;
+  async function logout() {
+    await updateDoc(doc(firestore, "users", id), { active: false });
     Cookies.remove("userRole");
     Cookies.remove("token");
     navigate("/");

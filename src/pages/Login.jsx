@@ -49,7 +49,7 @@ const Login = () => {
         message.error("User data not found!");
       }
 
-      console.log(Cookies.get("token"));
+     
     } catch (error) {
       message.error("Login failed: " + error.message);
     } finally {

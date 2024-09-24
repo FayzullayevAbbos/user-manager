@@ -13,7 +13,7 @@ const { Sider } = Layout;
 const Sidebar = ({ collapsed }) => {
   const { role } = useUserRole();
   const navigate = useNavigate();
-  console.log(role);
+
   const location = useLocation();
   const token = Cookies.get("token");
   const [selectedPath, setSelectedPath] = useState("1");
@@ -27,7 +27,7 @@ const Sidebar = ({ collapsed }) => {
       role == 'user'?   setSelectedPath("1"):setSelectedPath('3')
     }
   }, [location.pathname]);
-  console.log(location.pathname);
+  
   
 
   const getMenuItems = () => {
@@ -83,7 +83,7 @@ const Sidebar = ({ collapsed }) => {
           mode='inline'
           selectedKeys={selectedPath}
           defaultSelectedKeys={["1"]}
-          items={getMenuItems()} // Dinamik menyu
+          items={getMenuItems()} 
         />
       ) : (
         ""
@@ -94,18 +94,4 @@ const Sidebar = ({ collapsed }) => {
 
 export default Sidebar;
 
-// useEffect(() => {
-//   if (location.pathname == "/dash") {
-//     setLocationPath("1");
-//   } else if (location.pathname == "/brands") {
-//     setLocationPath("2");
-//   } else if (location.pathname == "/cities") {
-//     setLocationPath("3");
-//   } else if (location.pathname == "/locations") {
-//     setLocationPath("4");
-//   } else if (location.pathname == "/cars") {
-//     setLocationPath("5");
-//   } else if (location.pathname == "/models") {
-//     setLocationPath("6");
-//   }
-// }, []);
+
