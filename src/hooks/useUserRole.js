@@ -5,30 +5,41 @@ import { useNavigate } from "react-router-dom";
 
 const useUserRole = () => {
   const [role, setRole] = useState(null);
+  const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  
   useEffect(() => {
     const fetchRole = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const docRef = doc(firestore, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setRole(docSnap.data().role);  // Rolni olish
+      try {
+        const user = auth.currentUser;
+        
+        
+        if (user) {
+          const userDoc = await getDoc(doc(firestore, "users", user.uid));
+          
+          
+          if (userDoc.exists()) {
+            setRole(userDoc.data().role);
+            setData(userDoc.data())
+          } else {
+            message.error("User data not found!");
+          }
         } else {
-          console.error("No such document!");
+          navigate('/login');
         }
-      } else {
-        navigate("/login");  // Agar foydalanuvchi yo'q bo'lsa, login sahifasiga yo'naltirish
+      } catch (error) {
+        message.error("Error fetching role: " + error.message);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchRole();
-  }, []);
+  }, [navigate]);
 
-  return { role, loading };
+  return { role, loading , data };
 };
 
 export default useUserRole;

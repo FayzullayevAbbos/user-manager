@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Button, Input, message, Spin, Form } from "antd";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, firestore } from "../firebase";
 import { Link, useFetcher, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import Navbar from "../components/Navbar";
+import useUserRole from "../hooks/useUserRole";
+import { doc, getDoc } from "firebase/firestore";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ const Login = () => {
 
   const handleLogin = async (values) => {
     const { email, password } = values;
+
     setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -23,17 +25,31 @@ const Login = () => {
         password,
       );
       const dbUser = userCredential.user;
-      Cookies.set("token", dbUser.accessToken);
 
-      if (userRole !== "admin") {
-        message.error(
-          "You don't have permission to access this page. Please check your role.",
-        );
-        setLoading(false);
-        return;
+      const userDoc = await getDoc(
+        doc(firestore, "users", dbUser.uid),
+      );
+      if (userDoc.exists()) {
+        if (userDoc.data().role !== userRole) {
+          message.error(
+            "You don't have permission to access this page. Please check your role.",
+          );
+        } else {
+          if (userDoc.data().status === "blocked") {
+            message.error("This account was blocked");
+          } else if (userDoc.data().deleted === true) {
+            message.error("User data not found!");
+          } else {
+            Cookies.set("token", dbUser.accessToken);
+            setLoading(false);
+            navigate("/dashboard");
+          }
+        }
+      } else {
+        message.error("User data not found!");
       }
 
-      navigate("/dashboard");
+      console.log(Cookies.get("token"));
     } catch (error) {
       message.error("Login failed: " + error.message);
     } finally {
@@ -46,7 +62,6 @@ const Login = () => {
     } else if (!userRole) {
       navigate("/");
     }
-    
   }, []);
   return (
     <>

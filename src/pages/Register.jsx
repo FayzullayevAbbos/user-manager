@@ -3,7 +3,7 @@ import { Button, Input, message, Form, Spin } from "antd";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, firestore } from "../firebase";
 import Cookies from "js-cookie";
-import Navbar from "../components/Navbar";
+
 import { Link, useNavigate } from "react-router-dom";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore"; // Import serverTimestamp
 
@@ -11,8 +11,8 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate(); // Navigate hook for redirecting
-  const userRole =  Cookies.get('userRole')
-  const user = Cookies.get('token')
+  const userRole = Cookies.get("userRole");
+  const user = Cookies.get("token");
   const handleRegister = async (values) => {
     const { name, email, password } = values;
 
@@ -30,20 +30,21 @@ const Register = () => {
       await setDoc(doc(firestore, "users", dbUser.uid), {
         name: name,
         email: email,
-        role:Cookies.get('userRole'), // Rollar uchun qiymat
+        role: Cookies.get("userRole"), // Rollar uchun qiymat
         registrationTime: serverTimestamp(), // Ro'yxatdan o'tgan vaqt
         lastLoginTime: null, // Foydalanuvchi ilk marta kirgan vaqtda yangilanadi
-        status: "active", // Yangi foydalanuvchi holati
+        active: true,
+        status: "unblock",
+        uid: dbUser.uid, // Yangi foydalanuvchi holati
+        deleted:false,
       });
-
-     
 
       message.success("Registration successful!");
 
       // Foydalanuvchini boshqa sahifaga yo'naltirish
       navigate("/dashboard");
     } catch (error) {
-      message.error("Registration failed: " + error.message);
+      message.error("Registration failed ");
     } finally {
       setLoading(false);
     }
@@ -54,15 +55,10 @@ const Register = () => {
     } else if (!userRole) {
       navigate("/");
     }
-     
-    
   }, []);
-  
-  
 
   return (
     <>
-     
       <div className='flex flex-col items-center justify-center h-screen bg-gradient-to-r from-purple-500 to-pink-500'>
         <Form
           form={form}
